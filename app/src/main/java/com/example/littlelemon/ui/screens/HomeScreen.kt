@@ -1,4 +1,7 @@
 package com.example.littlelemon.ui.screens
 
-class HomeScreen {
-}
+import androidx.compose.runtime.Composable
+
+
+@Composable
+fun HomeScreen() {}

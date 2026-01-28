@@ -12,6 +12,7 @@ import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
 
+
 )
 
 private val LightColorScheme = lightColorScheme(
@@ -36,7 +37,6 @@ fun LittleLemonTheme(
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )
