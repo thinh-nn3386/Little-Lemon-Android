@@ -1,5 +1,7 @@
 package com.example.littlelemon.ui.screens
 
+import android.util.Patterns
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -8,6 +10,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,12 +18,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,37 +35,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.littlelemon.R
+import com.example.littlelemon.models.UserViewModel
 import com.example.littlelemon.ui.components.AppButton
 import com.example.littlelemon.ui.components.AppTextInput
+import com.example.littlelemon.ui.navigation.HomeRoute
 import com.example.littlelemon.ui.theme.Green
 import com.example.littlelemon.ui.theme.Markazi
-import android.util.Patterns
-import android.widget.Toast
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.lifecycle.ViewModel
-import com.example.littlelemon.models.UserViewModel
 
 @Composable
 fun OnboardingScreen(
-    viewModel: UserViewModel
+    navController: NavController,
+    viewModel: UserViewModel = viewModel()
 ) {
-    val user by viewModel.userState.collectAsState()
-
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -87,10 +84,14 @@ fun OnboardingScreen(
         if (firstName.isBlank() || lastName.isBlank()) {
             return
         }
+        viewModel.saveUser(firstName, lastName, email)
         Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
 
+        navController.navigate(HomeRoute) {
+            popUpTo(0) { inclusive = true }
+            launchSingleTop = true
+        }
     }
-
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -238,15 +239,6 @@ fun OnboardingScreen(
     }
 }
 
-
-
 fun isValidEmail(email: String): Boolean {
     return email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
-
-@Preview(showBackground = true)
-@Composable
-fun OnboardingScreenPreview() {
-    OnboardingScreen()
-}
-

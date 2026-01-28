@@ -1,25 +1,20 @@
 package com.example.littlelemon.models
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import kotlinx.coroutines.flow.StateFlow
 
-class UserViewModel(
-    private val userPreferences: UserPreferences
-) : ViewModel() {
+class UserViewModel(application: Application) : AndroidViewModel(application) {
+    private val userPreferences = UserPreferences(application)
 
     val userState: StateFlow<User> = userPreferences.userFlow
 
     fun saveUser(firstName: String, lastName: String, email: String) {
-        val current = userState.value
-        userPreferences.saveUser(current.copy(
-            firstName = firstName,
-            lastName = lastName,
-            email = email
-        ))
+        val user = User(firstName, lastName, email)
+        userPreferences.saveUser(user)
     }
 
-
-    fun clearUser(value: String) {
+    fun clearUser() {
         userPreferences.clearUser()
     }
 }
