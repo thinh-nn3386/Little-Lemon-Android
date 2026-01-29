@@ -37,7 +37,9 @@ fun Navigation(viewModel: UserViewModel = viewModel()) {
             HomeScreen()
         }
         composable<ProfileRoute> {
-            ProfileScreen()
+            ProfileScreen(
+                navController
+            )
         }
     }
 }

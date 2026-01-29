@@ -36,8 +36,8 @@ import com.example.littlelemon.ui.theme.Markazi
 fun AppTextInput(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit = {},
     enabled: Boolean = true,
     required: Boolean = false,
     isError: Boolean = false,
@@ -115,6 +115,6 @@ fun AppTextInput(
 @Composable
 fun AppTextInputPreview() {
     Column {
-        AppTextInput("Test", "Test", {})
+        AppTextInput("Test", "Test", )
     }
 }
