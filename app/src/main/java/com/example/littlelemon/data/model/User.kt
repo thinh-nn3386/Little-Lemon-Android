@@ -1,4 +1,4 @@
-package com.example.littlelemon.models
+package com.example.littlelemon.data.model
 
 
 data class User(

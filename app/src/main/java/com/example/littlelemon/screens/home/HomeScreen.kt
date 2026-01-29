@@ -1,4 +1,4 @@
-package com.example.littlelemon.ui.screens
+package com.example.littlelemon.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -40,16 +40,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.room.Room
-import com.example.littlelemon.AppDatabase
-import com.example.littlelemon.MenuItemRoom
+import com.example.littlelemon.data.database.AppDatabase
+import com.example.littlelemon.data.database.MenuItemRoom
 import com.example.littlelemon.R
-import com.example.littlelemon.services.NetworkApi
+import com.example.littlelemon.services.MenuApi
 import com.example.littlelemon.ui.components.MenuList
-import com.example.littlelemon.ui.navigation.ProfileRoute
+import com.example.littlelemon.navigation.ProfileRoute
 import com.example.littlelemon.ui.theme.Green
 
 
@@ -78,7 +77,7 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         // Check if database is empty to avoid unnecessary network calls
         if (database.menuDao().isEmpty()) {
-            val networkItems = NetworkApi.fetchMenu()
+            val networkItems = MenuApi.fetchMenu()
 
             println("Network Items: $networkItems")
 

@@ -1,4 +1,4 @@
-package com.example.littlelemon.ui.navigation
+package com.example.littlelemon.navigation
 
 import kotlinx.serialization.Serializable
 

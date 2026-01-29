@@ -1,7 +1,6 @@
 package com.example.littlelemon.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -11,12 +10,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.littlelemon.ui.theme.Black
 import com.example.littlelemon.ui.theme.Green
 import com.example.littlelemon.ui.theme.Markazi
-import com.example.littlelemon.ui.theme.Orange
 import com.example.littlelemon.ui.theme.White
 import com.example.littlelemon.ui.theme.Yellow
 
@@ -50,15 +47,5 @@ fun AppButton(
             fontWeight = FontWeight.Medium,
             fontFamily = Markazi,
         )
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun AppButtonPreview() {
-    Column {
-        AppButton()
-        AppButton(isActive = true)
     }
 }

@@ -15,28 +15,28 @@ val Markazi = FontFamily(
 
 // Set of Material typography styles to start with
 val Typography = Typography(
-    // Headline
-    headlineLarge = TextStyle(fontFamily = Markazi),
-    headlineMedium = TextStyle(fontFamily = Markazi),
-    headlineSmall = TextStyle(fontFamily = Markazi),
-
-    // Title
-    titleLarge = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Bold, fontSize = 22.sp),
-    titleMedium = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Medium, fontSize = 18.sp),
-    titleSmall = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Medium, fontSize = 14.sp),
-
-    // Body (This covers standard text)
-    bodyLarge = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 16.sp),
-    bodyMedium = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 14.sp),
-    bodySmall = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 12.sp),
-
-    // Label
-    labelLarge = TextStyle(fontFamily = Markazi),
-    labelMedium = TextStyle(fontFamily = Markazi),
-    labelSmall = TextStyle(fontFamily = Markazi),
-
-    // Display
-    displayLarge = TextStyle(fontFamily = Markazi),
-    displayMedium = TextStyle(fontFamily = Markazi),
-    displaySmall = TextStyle(fontFamily = Markazi)
+//    // Headline
+//    headlineLarge = TextStyle(fontFamily = Markazi),
+//    headlineMedium = TextStyle(fontFamily = Markazi),
+//    headlineSmall = TextStyle(fontFamily = Markazi),
+//
+//    // Title
+//    titleLarge = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Bold, fontSize = 22.sp),
+//    titleMedium = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Medium, fontSize = 18.sp),
+//    titleSmall = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Medium, fontSize = 14.sp),
+//
+//    // Body (This covers standard text)
+//    bodyLarge = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 16.sp),
+//    bodyMedium = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 14.sp),
+//    bodySmall = TextStyle(fontFamily = Markazi, fontWeight = FontWeight.Normal, fontSize = 12.sp),
+//
+//    // Label
+//    labelLarge = TextStyle(fontFamily = Markazi),
+//    labelMedium = TextStyle(fontFamily = Markazi),
+//    labelSmall = TextStyle(fontFamily = Markazi),
+//
+//    // Display
+//    displayLarge = TextStyle(fontFamily = Markazi),
+//    displayMedium = TextStyle(fontFamily = Markazi),
+//    displaySmall = TextStyle(fontFamily = Markazi)
 )

@@ -1,4 +1,4 @@
-package com.example.littlelemon.ui.screens
+package com.example.littlelemon.screens.onboarding
 
 import android.util.Patterns
 import android.widget.Toast
@@ -45,15 +45,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.littlelemon.R
-import com.example.littlelemon.models.UserViewModel
+import com.example.littlelemon.data.model.UserViewModel
 import com.example.littlelemon.ui.components.AppButton
 import com.example.littlelemon.ui.components.AppTextInput
-import com.example.littlelemon.ui.navigation.HomeRoute
+import com.example.littlelemon.navigation.HomeRoute
 import com.example.littlelemon.ui.theme.Green
 import com.example.littlelemon.ui.theme.Markazi
 

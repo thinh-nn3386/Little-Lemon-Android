@@ -1,7 +1,8 @@
-package com.example.littlelemon.models
+package com.example.littlelemon.data.model
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import com.example.littlelemon.data.preferences.UserPreferences
 import kotlinx.coroutines.flow.StateFlow
 
 class UserViewModel(application: Application) : AndroidViewModel(application) {

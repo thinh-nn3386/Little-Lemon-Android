@@ -1,4 +1,4 @@
-package com.example.littlelemon.ui.screens
+package com.example.littlelemon.screens.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -31,10 +31,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.littlelemon.R
-import com.example.littlelemon.models.UserViewModel
+import com.example.littlelemon.data.model.UserViewModel
 import com.example.littlelemon.ui.components.AppButton
 import com.example.littlelemon.ui.components.AppTextInput
-import com.example.littlelemon.ui.navigation.OnBoardingRoute
+import com.example.littlelemon.navigation.OnBoardingRoute
 
 @Composable
 fun ProfileScreen(
