@@ -28,7 +28,6 @@ fun AppButton(
     label: String = "Button",
     onClick: () -> Unit = {},
 ) {
-    // Define colors based on the active state
     val backgroundColor = if (isActive) Green else Yellow
     val textColor = if (isActive) White else Black
     val border = if (isActive) BorderStroke(1.dp, Green) else BorderStroke(1.dp, Yellow)

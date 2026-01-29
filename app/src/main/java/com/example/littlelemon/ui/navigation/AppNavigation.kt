@@ -21,7 +21,6 @@ fun Navigation(viewModel: UserViewModel = viewModel()) {
     val startDestination = remember(user) {
         if (user.email.isNotBlank()) HomeRoute else OnBoardingRoute
     }
-
     val navController = rememberNavController()
 
     NavHost(
@@ -34,7 +33,9 @@ fun Navigation(viewModel: UserViewModel = viewModel()) {
             )
         }
         composable<HomeRoute> {
-            HomeScreen()
+            HomeScreen(
+                navController
+            )
         }
         composable<ProfileRoute> {
             ProfileScreen(

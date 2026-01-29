@@ -45,7 +45,7 @@ fun AppTextInput(
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     containerModifier: Modifier = Modifier
-    ) {
+) {
     var hasBeenFocused by remember { mutableStateOf(false) }
     var showRequireError by remember { mutableStateOf(false) }
 
@@ -84,7 +84,7 @@ fun AppTextInput(
                 unfocusedBorderColor = LightGray, // Remains LightGray when not focused
                 focusedTextColor = Black,
                 unfocusedTextColor = Black,
-                cursorColor = Green ,
+                cursorColor = Green,
                 errorBorderColor = Color.Red,
                 errorCursorColor = Color.Red// Optional: makes the cursor match the focus state
             ),
@@ -115,6 +115,6 @@ fun AppTextInput(
 @Composable
 fun AppTextInputPreview() {
     Column {
-        AppTextInput("Test", "Test", )
+        AppTextInput("Test", "Test")
     }
 }
