@@ -1,4 +1,34 @@
 package com.example.littlelemon.data.repository
 
-class MenuRepository {
+import com.example.littlelemon.data.database.MenuDao
+import com.example.littlelemon.data.database.toDomain
+import com.example.littlelemon.data.model.MenuItem
+import com.example.littlelemon.services.MenuApi
+import com.example.littlelemon.services.toEntity
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlin.collections.map
+
+@Singleton
+class MenuRepository @Inject constructor(
+    private val menuDao: MenuDao,
+    private val menuApi: MenuApi
+) {
+
+    fun observeMenu(): Flow<List<MenuItem>> {
+        return menuDao.getAllMenuItems().map { entities ->
+            entities.map { entity ->
+                entity.toDomain()
+            }
+        }
+    }
+
+    suspend fun refreshMenuIfNeeded() {
+        if (menuDao.isEmpty()) {
+            val remoteMenu = menuApi.fetchMenu()
+            menuDao.insertAll(remoteMenu.map { it.toEntity() })
+        }
+    }
 }

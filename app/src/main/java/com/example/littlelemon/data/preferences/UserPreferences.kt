@@ -3,13 +3,20 @@ package com.example.littlelemon.data.preferences
 import android.content.Context
 import androidx.core.content.edit
 import com.example.littlelemon.data.model.User
+import dagger.hilt.android.qualifiers.ApplicationContext
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
 
 /**
  * Wrap SharedPreferences
  * Convert it into StateFlow
  * Single source of truth
  */
-class UserPreferences(context: Context) {
+
+@Singleton
+class UserPreferences @Inject constructor(
+    @ApplicationContext context: Context
+) {
     private val prefs =
         context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 

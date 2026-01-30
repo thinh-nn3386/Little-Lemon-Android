@@ -26,22 +26,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.littlelemon.R
-import com.example.littlelemon.data.model.UserViewModel
 import com.example.littlelemon.ui.components.AppButton
 import com.example.littlelemon.ui.components.AppTextInput
 import com.example.littlelemon.navigation.OnBoardingRoute
 
 @Composable
 fun ProfileScreen(
-    navController: NavController? = null,
-    viewModel: UserViewModel = viewModel()
+    navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
-    val user by viewModel.userState.collectAsState()
+    val state by viewModel.state.collectAsState()
 
     fun onLogOut() {
         viewModel.clearUser()
@@ -111,28 +109,22 @@ fun ProfileScreen(
                 AppTextInput(
                     enabled = false,
                     label = "First name",
-                    value = user.firstName,
+                    value = state.firstName,
                     containerModifier = Modifier.padding(vertical = 8.dp)
                 )
                 AppTextInput(
                     enabled = false,
                     label = "First name",
-                    value = user.lastName,
+                    value = state.lastName,
                     containerModifier = Modifier.padding(vertical = 8.dp)
                 )
                 AppTextInput(
                     enabled = false,
                     label = "First name",
-                    value = user.email,
+                    value = state.email,
                     containerModifier = Modifier.padding(vertical = 8.dp)
                 )
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun ProfilePreview() {
-    ProfileScreen()
 }

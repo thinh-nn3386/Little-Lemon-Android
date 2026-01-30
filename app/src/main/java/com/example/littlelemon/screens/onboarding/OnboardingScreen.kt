@@ -1,7 +1,5 @@
 package com.example.littlelemon.screens.onboarding
 
-import android.util.Patterns
-import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -26,10 +24,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -37,7 +34,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -46,49 +42,34 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.littlelemon.R
-import com.example.littlelemon.data.model.UserViewModel
+import com.example.littlelemon.navigation.HomeRoute
 import com.example.littlelemon.ui.components.AppButton
 import com.example.littlelemon.ui.components.AppTextInput
-import com.example.littlelemon.navigation.HomeRoute
 import com.example.littlelemon.ui.theme.Green
 import com.example.littlelemon.ui.theme.Markazi
 
 @Composable
 fun OnboardingScreen(
     navController: NavController,
-    viewModel: UserViewModel = viewModel()
+    viewModel: OnboardingViewModel = hiltViewModel()
 ) {
-    val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
     val focusRequester1 = remember { FocusRequester() }
     val focusRequester2 = remember { FocusRequester() }
     val focusRequester3 = remember { FocusRequester() }
 
-    var firstName by remember { mutableStateOf("") }
-    var lastName by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var isInvalidEmail by remember { mutableStateOf(false) }
-
+    val state by viewModel.state.collectAsState()
 
     fun onRegister() {
-        if (isValidEmail(email).not()) {
-            isInvalidEmail = true
-            return
-        }
-        if (firstName.isBlank() || lastName.isBlank()) {
-            return
-        }
-        viewModel.saveUser(firstName, lastName, email)
-        Toast.makeText(context, "Registration successful!", Toast.LENGTH_SHORT).show()
-
-        navController.navigate(HomeRoute) {
-            popUpTo(0) { inclusive = true }
-            launchSingleTop = true
+        viewModel.onRegisterClicked {
+            navController.navigate(HomeRoute) {
+                popUpTo(0) { inclusive = true }
+                launchSingleTop = true
+            }
         }
     }
 
@@ -114,7 +95,7 @@ fun OnboardingScreen(
         },
         bottomBar = {
             AppButton(
-                enabled = firstName.isNotBlank() && lastName.isNotBlank() && email.isNotBlank(),
+                enabled = state.isRegisterEnabled,
                 label = "Register",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,8 +136,8 @@ fun OnboardingScreen(
                 AppTextInput(
                     required = true,
                     label = "First name",
-                    value = firstName,
-                    onValueChange = { firstName = it },
+                    value = state.firstName,
+                    onValueChange = viewModel::onFirstNameChanged,
                     modifier = Modifier
                         .focusRequester(focusRequester1),
                     keyboardOptions = KeyboardOptions(
@@ -165,7 +146,7 @@ fun OnboardingScreen(
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            if (firstName.isNotBlank()) {
+                            if (state.firstName.isNotBlank()) {
                                 focusRequester2.requestFocus()
                             } else {
                                 keyboardController?.hide()
@@ -177,8 +158,8 @@ fun OnboardingScreen(
                 AppTextInput(
                     required = true,
                     label = "Last name",
-                    value = lastName,
-                    onValueChange = { lastName = it },
+                    value = state.lastName,
+                    onValueChange = viewModel::onLastNameChanged,
                     modifier = Modifier
                         .focusRequester(focusRequester2),
                     keyboardOptions = KeyboardOptions(
@@ -187,7 +168,7 @@ fun OnboardingScreen(
                     ),
                     keyboardActions = KeyboardActions(
                         onNext = {
-                            if (lastName.isNotBlank()) {
+                            if (state.lastName.isNotBlank()) {
                                 focusRequester3.requestFocus()
                             } else {
                                 keyboardController?.hide()
@@ -199,11 +180,8 @@ fun OnboardingScreen(
                 AppTextInput(
                     required = true,
                     label = "Email",
-                    value = email,
-                    onValueChange = {
-                        email = it
-                        isInvalidEmail = false
-                    },
+                    value = state.email,
+                    onValueChange = viewModel::onEmailChanged,
                     modifier = Modifier
                         .focusRequester(focusRequester3),
                     keyboardOptions = KeyboardOptions(
@@ -221,7 +199,7 @@ fun OnboardingScreen(
 
                 // ✅ Error text with Animation
                 AnimatedVisibility(
-                    visible = isInvalidEmail,
+                    visible = state.isInvalidEmail,
                     enter = expandVertically(animationSpec = tween(300)) + fadeIn(),
                     exit = shrinkVertically(animationSpec = tween(300)) + fadeOut()
                 ) {
@@ -236,8 +214,4 @@ fun OnboardingScreen(
             }
         }
     }
-}
-
-fun isValidEmail(email: String): Boolean {
-    return email.isNotBlank() && Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

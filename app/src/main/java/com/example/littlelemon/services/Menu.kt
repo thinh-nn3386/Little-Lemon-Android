@@ -1,7 +1,9 @@
 package com.example.littlelemon.services
 
+import com.example.littlelemon.data.database.MenuItemEntity
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.Int
 
 @Serializable
 data class MenuNetwork(
@@ -24,3 +26,15 @@ data class MenuItemNetwork(
     @SerialName("category")
     val category: String
 )
+
+fun MenuItemNetwork.toEntity(): MenuItemEntity {
+    return MenuItemEntity(
+        id = id,
+        title = title,
+        price = price,
+        description = description,
+        image = image,
+        category = category
+    )
+}
+
