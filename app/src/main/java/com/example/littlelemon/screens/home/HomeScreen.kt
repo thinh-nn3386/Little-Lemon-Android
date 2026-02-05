@@ -40,8 +40,10 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.littlelemon.R
 import com.example.littlelemon.navigation.ProfileRoute
+import com.example.littlelemon.ui.components.CategoriesList
 import com.example.littlelemon.ui.components.MenuList
 import com.example.littlelemon.ui.theme.Green
+import kotlin.String
 
 
 @Composable
@@ -97,6 +99,12 @@ fun HomeScreen(
             TopPanel(
                 state.searchQuery,
                 onChangeSearch = viewModel::onSearchQueryChanged
+            )
+
+            CategoriesList(
+                selectedCategory=state.selectedCategory,
+                categories=state.menuItemsCategory,
+                onSelect=viewModel::onSelectItemCategory
             )
 
             MenuList(

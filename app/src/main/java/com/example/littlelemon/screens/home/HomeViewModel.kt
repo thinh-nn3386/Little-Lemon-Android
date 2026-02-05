@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.text.contains
@@ -20,24 +21,44 @@ class HomeViewModel @Inject constructor(
 
     // 1. The UI State (Search query, loading, etc.)
     private val _searchQuery = MutableStateFlow("")
+    private val _selectedCategory = MutableStateFlow("")
     private val _isLoading = MutableStateFlow(false)
     private val _errorMessage = MutableStateFlow<String?>(null)
+
+    // 1. Create a separate Flow for categories.
+    // It only triggers when the database rawItems change.
+    private val _categories = menuRepository.observeMenu()
+        .map { items -> items.map { it.category }.distinct() }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    // Combine the user inputs first
+    val filterFlow = combine(_searchQuery, _selectedCategory) { query, cat -> query to cat }
 
     // 2. The Filtered State (Derived from Database + Search Query)
     val state: StateFlow<HomeState> = combine(
         menuRepository.observeMenu(), // The source from Room
-        _searchQuery,
+        _categories,
+        filterFlow,
         _isLoading,
         _errorMessage
-    ) { rawItems, query, loading, error ->
-        val filteredItems = if (query.isBlank()) {
+    ) { rawItems, categories, filters, loading, error ->
+        val (query, category) = filters
+        val filteredItemsByCategory = if (category.isBlank()) {
             rawItems
         } else {
-            rawItems.filter { it.title.contains(query, ignoreCase = true) }
+            rawItems.filter { it.category == category }
+        }
+
+        val filteredItems = if (query.isBlank()) {
+            filteredItemsByCategory
+        } else {
+            filteredItemsByCategory.filter { it.title.contains(query, ignoreCase = true) }
         }
 
         HomeState(
             menuItems = filteredItems,
+            menuItemsCategory = categories,
+            selectedCategory = category,
             searchQuery = query,
             isLoading = loading,
             errorMessage = error
@@ -51,6 +72,12 @@ class HomeViewModel @Inject constructor(
     init {
         refreshMenu()
     }
+
+    fun onSelectItemCategory(category: String) {
+        // Toggle category: if same is clicked, clear filter
+        _selectedCategory.value = if (_selectedCategory.value == category) "" else category
+    }
+
 
     fun onSearchQueryChanged(query: String) {
         _searchQuery.value = query
