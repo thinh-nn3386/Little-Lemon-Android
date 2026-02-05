@@ -24,80 +24,33 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.room.Room
-import com.example.littlelemon.data.database.AppDatabase
-import com.example.littlelemon.data.database.MenuItemRoom
 import com.example.littlelemon.R
-import com.example.littlelemon.services.MenuApi
-import com.example.littlelemon.ui.components.MenuList
 import com.example.littlelemon.navigation.ProfileRoute
+import com.example.littlelemon.ui.components.MenuList
 import com.example.littlelemon.ui.theme.Green
 
 
 @Composable
 fun HomeScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val focusManager = LocalFocusManager.current
-
-    // Define a state for the search text at the top of HomeScreen
-    var searchPhrase by remember { mutableStateOf("") }
-
-    val context = LocalContext.current
-
-    // 1. Initialize Database (Ideally this should be in a ViewModel or Singleton)
-    val database = remember {
-        Room.databaseBuilder(context, AppDatabase::class.java, "database").build()
-    }
-
-    // 2. Observe the database as state
-    // Whenever the database changes, databaseMenuItems will update automatically
-    val databaseMenuItems by database.menuDao().getAllMenuItems()
-        .collectAsState(initial = emptyList())
-
-    // 3. Fetch from Network and Save to Database
-    LaunchedEffect(Unit) {
-        // Check if database is empty to avoid unnecessary network calls
-        if (database.menuDao().isEmpty()) {
-            val networkItems = MenuApi.fetchMenu()
-
-            println("Network Items: $networkItems")
-
-            // Map Network objects to Room objects
-            val roomItems = networkItems.map {
-                MenuItemRoom(
-                    id = it.id,
-                    title = it.title,
-                    description = it.description,
-                    price = it.price,
-                    image = it.image,
-                    category = it.category
-                )
-            }
-
-            // Insert into database (The UI will update automatically because of the Flow)
-            database.menuDao().insertAll(roomItems)
-        }
-    }
-
+    val state by viewModel.state.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -142,12 +95,12 @@ fun HomeScreen(
                     })
                 }) {
             TopPanel(
-                searchPhrase,
-                onChangeSearch = { searchPhrase = it }
+                state.searchQuery,
+                onChangeSearch = viewModel::onSearchQueryChanged
             )
 
             MenuList(
-                data = databaseMenuItems
+                data = state.menuItems
             )
         }
     }

@@ -21,11 +21,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.example.littlelemon.data.database.MenuItemRoom
+import com.example.littlelemon.data.model.MenuItem
 
 @Composable
 fun MenuList(
-    data: List<MenuItemRoom>
+    data: List<MenuItem>
 ) {
     LazyColumn {
         items(
@@ -40,7 +40,7 @@ fun MenuList(
 
 @Composable
 fun MenuItem(
-    item: MenuItemRoom
+    item: MenuItem
 ) {
     Row(
         modifier = Modifier

@@ -1,4 +1,4 @@
-package com.example.littlelemon.services
+package com.example.littlelemon.data.api
 
 import com.example.littlelemon.data.database.MenuItemEntity
 import kotlinx.serialization.SerialName

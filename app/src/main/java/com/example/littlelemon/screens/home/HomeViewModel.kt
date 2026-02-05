@@ -2,71 +2,70 @@ package com.example.littlelemon.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.littlelemon.data.model.MenuItem
 import com.example.littlelemon.data.repository.MenuRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.text.contains
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val menuRepository: MenuRepository
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(HomeState())
-    val state: StateFlow<HomeState> = _state
+    // 1. The UI State (Search query, loading, etc.)
+    private val _searchQuery = MutableStateFlow("")
+    private val _isLoading = MutableStateFlow(false)
+    private val _errorMessage = MutableStateFlow<String?>(null)
+
+    // 2. The Filtered State (Derived from Database + Search Query)
+    val state: StateFlow<HomeState> = combine(
+        menuRepository.observeMenu(), // The source from Room
+        _searchQuery,
+        _isLoading,
+        _errorMessage
+    ) { rawItems, query, loading, error ->
+        val filteredItems = if (query.isBlank()) {
+            rawItems
+        } else {
+            rawItems.filter { it.title.contains(query, ignoreCase = true) }
+        }
+
+        HomeState(
+            menuItems = filteredItems,
+            searchQuery = query,
+            isLoading = loading,
+            errorMessage = error
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = HomeState(isLoading = true)
+    )
 
     init {
-        observeMenu()
-        refreshIfNeeded()
-    }
-
-    private fun observeMenu() {
-        viewModelScope.launch {
-            menuRepository.observeMenu()
-                .collect { items ->
-                    applyFilter(items)
-                }
-        }
-    }
-
-    private fun refreshIfNeeded() {
-        viewModelScope.launch {
-            try {
-                _state.update { it.copy(isLoading = true) }
-                menuRepository.refreshMenuIfNeeded()
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(errorMessage = e.message)
-                }
-            } finally {
-                _state.update { it.copy(isLoading = false) }
-            }
-        }
+        refreshMenu()
     }
 
     fun onSearchQueryChanged(query: String) {
-        _state.update {
-            it.copy(searchQuery = query)
-        }
+        _searchQuery.value = query
     }
 
-    private fun applyFilter(items: List<MenuItem>) {
-        val query = _state.value.searchQuery
-
-        val filtered = if (query.isBlank()) {
-            items
-        } else {
-            items.filter {
-                it.title.contains(query, ignoreCase = true)
+    private fun refreshMenu() {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                menuRepository.refreshMenuIfNeeded()
+            } catch (e: Exception) {
+                _errorMessage.value = e.message
+            } finally {
+                _isLoading.value = false
             }
-        }
-
-        _state.update {
-            it.copy(menuItems = filtered)
         }
     }
 }

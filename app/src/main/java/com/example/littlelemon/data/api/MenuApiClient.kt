@@ -1,4 +1,4 @@
-package com.example.littlelemon.services
+package com.example.littlelemon.data.api
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
